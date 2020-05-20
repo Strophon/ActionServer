@@ -17,8 +17,9 @@ public class ActionConstants {
         return max;
     }
     public ActionConstants setMax(long max) {
-        if(isMutable())
+        if(isMutable()) {
             this.max = max;
+        }
         return this;
     }
 

@@ -4,7 +4,6 @@ import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.FiberScheduler;
 import co.paralleluniverse.fibers.Suspendable;
 import com.github.strophon.cache.CacheAccessObject;
-import com.github.strophon.web.EventVerticle;
 import io.vertx.core.*;
 import io.vertx.core.eventbus.ReplyException;
 import io.vertx.core.eventbus.ReplyFailure;

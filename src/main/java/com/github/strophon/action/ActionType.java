@@ -49,8 +49,9 @@ public interface ActionType {
     }
 
     class NonExistentAction implements Action {
-        private Result error = new Result().setSuccess(false)
-                                           .setError("Missing or invalid action type");
+        private static final String ERROR = "Missing or invalid action type";
+
+        private Result error = new Result().setSuccess(false).setError(ERROR);
         private ActionInput input;
 
         NonExistentAction() {
@@ -95,7 +96,7 @@ public interface ActionType {
         @Override
         public Result checkForErrors() {
             return null;
-        } // override this to prevent NPE
+        }
 
 
         @Override

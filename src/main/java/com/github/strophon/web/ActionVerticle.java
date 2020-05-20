@@ -74,11 +74,12 @@ public class ActionVerticle extends SyncVerticle {
         String sessionId;
 
         try {
-            if(!action.allowedWhilePaused() && SyncUtil.<Boolean>await(handler -> cache.isPaused(handler))) {
+            if(!action.allowedWhilePaused()
+                    && SyncUtil.<Boolean>await(handler -> cache.isPaused(handler))) {
                 msg.reply(
                         GSON.toJson(
                                 new Result().setSuccess(false)
-                                            .setError("Sorry, the system is currently paused.")));
+                                            .setError("Sorry, the system is currently paused.") ) );
                 return;
             }
 
@@ -98,7 +99,7 @@ public class ActionVerticle extends SyncVerticle {
         }
 
         if(input.getSessionId() == null
-                || !Misc.secureEqualsIgnoreCase(sessionId, input.getSessionId())) {
+                || !Misc.secureEqualsIgnoreCase(sessionId, input.getSessionId()) ) {
             String desc = (input.getSessionId() == null ? "Null" : "Invalid") + " sessionId";
             handleError(desc, in, null, msg);
             return;
@@ -119,10 +120,10 @@ public class ActionVerticle extends SyncVerticle {
 
             action.logAction(logger.isDebugEnabled(), logger.isTraceEnabled(), logger::info);
 
-            msg.reply( GSON.toJson( result ) );
+            msg.reply(GSON.toJson(result));
 
             if(result.getSuccess() && !action.getEvents().isEmpty()) {
-                vertx.eventBus().send("server.events", GSON.toJson(action.getEvents()));
+                vertx.eventBus().send( "server.events", GSON.toJson(action.getEvents()) );
             }
         } catch(Exception e) {
             handleError("Exception Encountered Post-Authentication", in, e, msg);
@@ -136,10 +137,11 @@ public class ActionVerticle extends SyncVerticle {
     private void handleError(String desc, String in, Exception e, Message<String> msg) {
         String logMessage = desc + "; Input: " + in;
 
-        if(e != null)
+        if(e != null) {
             logger.error(logMessage, e);
-        else
+        } else {
             logger.info(logMessage);
+        }
 
         msg.reply(GENERIC_ERROR);
     }
