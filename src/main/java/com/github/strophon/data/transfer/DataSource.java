@@ -3,7 +3,7 @@ package com.github.strophon.data.transfer;
 
 import com.github.strophon.data.DataIO;
 
-public class DataSource {
+public final class DataSource {
     private ObjectContainer container;
     private DataIO dio;
 
