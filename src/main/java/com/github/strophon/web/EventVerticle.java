@@ -131,7 +131,7 @@ public class EventVerticle extends SyncVerticle {
             SyncUtil.<Message<String>>await(handler ->
                     vertx.eventBus().send("client." + sessionId + ".events", stringList, handler));
 
-            Set<Integer> eventIds = new HashSet<>();
+            Set<Integer> eventIds = new LinkedHashSet<>();
 
             SyncUtil.awaitBlocking(vertx, future -> {
                 for(Event event : events) {
