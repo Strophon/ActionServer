@@ -6,6 +6,15 @@ public class Result {
     private String result;
     private String error;
 
+    public Result() { }
+
+    public Result(Result other) {
+        this.type = other.type;
+        this.success = other.success;
+        this.result = other.result;
+        this.error = other.error;
+    }
+
     public String getType() {
         return type;
     }
