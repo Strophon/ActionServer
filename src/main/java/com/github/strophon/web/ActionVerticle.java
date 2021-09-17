@@ -54,7 +54,7 @@ public class ActionVerticle extends SyncVerticle {
         try {
             input = instantiator.createInputFromString(in);
         } catch(JsonSyntaxException e) { // malformed JSON input
-            handleError("Malformed JSON", in, e, msg);
+            handleError("Malformed JSON", in, e, msg, GENERIC_ERROR);
             return;
         }
 
@@ -62,12 +62,12 @@ public class ActionVerticle extends SyncVerticle {
         try {
             action = executor.getAction(input);
         } catch(Exception e) {
-            handleError("Error during getAction() call", in, e, msg);
+            handleError("Error during getAction() call", in, e, msg, GENERIC_ERROR);
             return;
         }
 
         if(action instanceof ActionType.NonExistentAction) { // unrecognized action type
-            handleError("Action type missing or invalid", in, null, msg);
+            handleError("Action type missing or invalid", in, null, msg, GENERIC_ERROR);
             return;
         }
 
@@ -86,7 +86,7 @@ public class ActionVerticle extends SyncVerticle {
             sessionId = SyncUtil.await(handler ->
                     cache.getUserSessionId(input.getUserId(), handler));
         } catch(Exception e) {
-            handleError("Error during cache access", in, e, msg);
+            handleError("Error during cache access", in, e, msg, GENERIC_ERROR);
             return;
         }
 
@@ -94,14 +94,14 @@ public class ActionVerticle extends SyncVerticle {
             Exception e = new RuntimeException(
                     "No session ID found for user ID "  + input.getUserId());
 
-            handleError("No cached sessionId found", in, e, msg);
+            handleError("No cached sessionId found", in, e, msg, CONNECTION_ERROR);
             return;
         }
 
         if(input.getSessionId() == null
                 || !Misc.secureEqualsIgnoreCase(sessionId, input.getSessionId()) ) {
             String desc = (input.getSessionId() == null ? "Null" : "Invalid") + " sessionId";
-            handleError(desc, in, null, msg);
+            handleError(desc, in, null, msg, CONNECTION_ERROR);
             return;
         }
 
@@ -113,7 +113,7 @@ public class ActionVerticle extends SyncVerticle {
                     future.complete( executor.execute(action, seed, new DataSource(dio)) ) );
 
             if(result == null) { // this shouldn't happen
-                handleError("Null Result from Action", in, null, msg);
+                handleError("Null Result from Action", in, null, msg, GENERIC_ERROR);
                 action.logAction(true, true, logger::error);
                 return;
             }
@@ -126,7 +126,7 @@ public class ActionVerticle extends SyncVerticle {
                 vertx.eventBus().send( "server.events", GSON.toJson(action.getEvents()) );
             }
         } catch(Exception e) {
-            handleError("Exception Encountered Post-Authentication", in, e, msg);
+            handleError("Exception Encountered Post-Authentication", in, e, msg, GENERIC_ERROR);
         }
     }
 
@@ -134,7 +134,11 @@ public class ActionVerticle extends SyncVerticle {
             GSON.toJson( new Result().setSuccess(false)
                                      .setError("An error occurred while processing your request") );
 
-    private void handleError(String desc, String in, Exception e, Message<String> msg) {
+    public static final String CONNECTION_ERROR = "CONNECTION INVALID";
+
+
+    private void handleError(String desc, String in,
+                             Exception e, Message<String> msg, String response) {
         String logMessage = desc + "; Input: " + in;
 
         if(e != null) {
@@ -143,6 +147,6 @@ public class ActionVerticle extends SyncVerticle {
             logger.info(logMessage);
         }
 
-        msg.reply(GENERIC_ERROR);
+        msg.reply(response);
     }
 }
