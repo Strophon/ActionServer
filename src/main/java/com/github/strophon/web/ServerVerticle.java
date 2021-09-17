@@ -346,7 +346,8 @@ public abstract class ServerVerticle extends SyncVerticle {
                 cache.logIpForPotentialBan(clientIpAddress, res -> { });
 
                 context.response()
-                       .setStatusCode(400).end("Maximum name length is 20 characters.");
+                       .setStatusCode(400).end(
+                               "Maximum name length is " + getMaximumNameLength() + " characters.");
                 return;
             } else if(name.length() < getMinimumNameLength()) {
                 logger.info(
@@ -356,7 +357,8 @@ public abstract class ServerVerticle extends SyncVerticle {
                 cache.logIpForPotentialBan(clientIpAddress, res -> { });
 
                 context.response()
-                       .setStatusCode(400).end("Minimum name length is 2 characters.");
+                       .setStatusCode(400).end(
+                               "Minimum name length is " + getMinimumNameLength() + " characters.");
                 return;
             }
 
