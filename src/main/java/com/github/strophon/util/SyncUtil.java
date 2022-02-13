@@ -35,12 +35,12 @@ public class SyncUtil {
     }
 
     @Suspendable
-    public static <T> T awaitBlocking(Vertx vertx, Handler<Future<T>> blockingHandler) {
+    public static <T> T awaitBlocking(Vertx vertx, Handler<Promise<T>> blockingHandler) {
         return await(resultHandler -> vertx.executeBlocking(blockingHandler, resultHandler));
     }
 
     @Suspendable
-    public static <T> T awaitBlockingUnordered(Vertx vertx, Handler<Future<T>> blockingHandler) {
+    public static <T> T awaitBlockingUnordered(Vertx vertx, Handler<Promise<T>> blockingHandler) {
         return await(resultHandler -> vertx.executeBlocking(blockingHandler, false, resultHandler));
     }
 
