@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.io.BaseEncoding;
 
@@ -18,19 +19,14 @@ public class Randomizer {
         }
     }
 
-    private SecureRandom sr;
+    private Random sr;
 
     public Randomizer(byte[] seed) {
         setSeed(seed);
     }
 
     private void setSeed(byte[] seed) {
-        try {
-            sr = SecureRandom.getInstance("SHA1PRNG");
-        } catch(NoSuchAlgorithmException e) {
-            throw new RuntimeException(e); // this shouldn't happen
-        }
-        sr.setSeed(seed);
+        sr = new Sha1Prng(seed);
     }
 
     public float upToOne() {
