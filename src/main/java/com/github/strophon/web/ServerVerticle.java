@@ -536,7 +536,7 @@ public abstract class ServerVerticle extends SyncVerticle {
      * @param authInfo a <code>UserAuthInfo</code> containing the provided authentication string
      *                 value, to carry back to the caller either the successfully converted
      *                 authentication blob or, optionally, an error message
-     * @return the byte array comprising the authentication blob (e.g. password hash, public key)
+     * Returns the byte array comprising the authentication blob (e.g. password hash, public key)
      * to be stored in the database, or <code>null</code> if parsing or verification fail
      */
     protected abstract void verifyAndConvertAuthBlob(UserAuthInfo authInfo);
